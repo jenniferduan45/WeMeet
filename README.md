@@ -1,16 +1,9 @@
-# COMS W4152 SaaS Project
+# WeMeet
 
-## Github Link
-https://github.com/rl3250/f22_saas_project/
+This is an event-organization app for college students to post, search, join, comment, and rate events. It is developed in Ruby on Rails.
 
-## Deployment
-Deployed on Heroku: https://f22-saas-wemeet.herokuapp.com/
-
-## Team members
-1. Ruize Li (rl3250)
-2. Ken Xiong (kx2175)
-3. Jianyang Duan (jd3794)
-4. Moxin Xu (mx2237)
+## Group Demo Video
+https://youtu.be/30avNv94V8k
 
 ## Dependency
 1. install `postgreSql` on your local computer. [Reference here](https://www.postgresql.org/download/)
@@ -26,7 +19,3 @@ Deployed on Heroku: https://f22-saas-wemeet.herokuapp.com/
 1. `rake cucumber` for BDD tests.
 2. `rake spec` for TDD Rspec tests.
 3. coverage reports are generated seperated for both `Spec` and `Cucumber` and both are under the `coverage` folder.
-
-## How to run code smell detector reek
-1. `reek .` in your terminal under project directory.
-2. reports are generated in the terminal.
