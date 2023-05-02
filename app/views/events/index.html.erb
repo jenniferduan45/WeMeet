@@ -1,0 +1,90 @@
+<!--  This file is app/views/events/index.html.erb -->
+<h1><%= @page_name %></h1>
+
+<hr>
+<div>
+<%= form_tag search_result_path, method: :get, id: 'search_form' do %>
+    <%= text_field_tag :q, nil, :required => true, size: 50, placeholder: "Search event/host/attendee name" %> 
+    <%= submit_tag "Search", class: "btn btn-primary", id: "search_result" %>
+    
+    <div> Available Events in: 
+    <%= select_year(0, {:prompt => "Year", :start_year => DateTime.now.year,:end_year => DateTime.now.year - 5, prefix: 'select'},{:field_name => 'year', :id => 'start-year'}) %>
+    <%= select_month(0, {:prompt => "Month", prefix: 'select'},{:field_name => 'month', :id => 'start-month'}) %>
+    </div>
+
+    <div> Events Category: 
+    <%= select_tag "category_selected", options_for_select([ "Category","Food","Entertainment","Sports","Academic","Other"], "Category") %>
+    </div>
+
+    <div> Events Location:
+      <%= select_tag "location_selected", options_for_select(['Location', 'Butler Library', 'Lerner Hall', 'John Jay', 'Dodge', 'Low Library', 'Uris', 'Mudd', 'Northwest Corner Building', 'International Affairs', 'Kent', 'Philosophy', 'Hamilton', 'Pulitzer', 'Mathematics', 'Avery', 'Fayerweather', 'Schermerhorn', 'Chandler', 'Pupin', 'Schapiro CEPSR', 'Faculty House', 'Barnard', 'Law School', 'Wallach', 'Hartley', 'Wien', 'East Campus', 'Other Off Campus Place'], "Location") %>
+    </div>
+
+    <div> Status of the event:
+    <%= select_tag "status_selected", options_for_select(["Status","Open","Closed"], "Status") %>
+    </div>
+<% end %>
+</div>
+<hr>
+
+<%#  Part 2: Start here... %>
+
+<table class="table table-striped col-md-12" id="events">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Category</th>
+      <th>Host</th>
+      <th>Host Rating</th>
+      <th>Time</th>
+      <th>Status</th>
+      <th>Joined</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @events.each do |event| %>
+    <% if event.promoted?  %>
+      <tr class="table-danger border border-danger border-4">
+    <% else  %>
+      <tr class="">
+    <% end  %>
+        <td>
+          <% if event.promoted?  %>
+            <%= link_to event.title, event_path(event), :class=>""%>
+          <% else  %>
+            <%= link_to event.title, event_path(event)%>
+          <% end  %>
+        </td>
+        <td>
+        <%= event.category %>
+        </td>
+        <td>
+          <%= link_to event.host, user_path(@users.fetch(event.host)) %>
+        </td>
+        <td>
+          <% (@users.fetch(event.host).rating.nil? ? 5 : @users.fetch(event.host).rating).times do %>
+            ⭐️
+          <% end %>
+        </td>
+        <td>
+          <%= event.event_time.nil? ? "TBD" : event.event_time.strftime("%m-%d-%Y") %>
+        </td>
+        <td>
+          <% if event.status == 'open' %>
+          
+          <span class="badge bg-success"><%= event.status %></span>
+          <% else  %>
+          <span class="badge bg-secondary"><%= event.status %></span>
+          <% end  %>
+        </td>
+        <td>
+          <%= event.joined %>
+        </td>
+        <td>
+          <%= link_to "Details", event_path(event), :class => 'btn btn-outline-secondary'%>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+

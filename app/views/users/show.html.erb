@@ -1,0 +1,142 @@
+<!--  This file is app/views/users/show.html.erb -->
+<h2>Details about <em><%= @user.username %></em></h2>
+
+<ul id="details">
+  <li>
+    🗣&nbsp;<b>Username</b>
+    &nbsp;<%= @user.username %>
+  </li>
+  <li>
+    📧&nbsp;<b>Email</b>
+    <% if @user.show_email or @is_viewer_user %>
+      &nbsp;<%= @user.email %>
+    <% else %>
+      &nbsp;set private by user 🔒
+    <% end %>
+  </li>
+  <li>
+    ✏️&nbsp;<b>Host Rating</b>
+    &nbsp;
+    <% @user.rating.times do %>
+      ⭐️
+    <% end %>
+  </li>
+  <li>
+    📅&nbsp;<b>Join WeMeet Since</b>
+    &nbsp;<%= @user.created_at.strftime("%m-%d-%Y") %>
+  </li>
+  <li>
+    💰&nbsp;<b>Coins</b>
+    &nbsp;<%= @user.coins %>
+  </li>
+</ul>
+<br>
+
+<div class="row">
+  <% if @is_viewer_user %>
+    <%= link_to 'Edit', edit_user_path(@user), :class => 'btn btn-outline-primary col-2' %>
+  <% end %>
+  <%= link_to 'Back to event list', events_path, :class => 'btn btn-outline-primary col-2' %>
+</div>
+<br>
+
+<br>
+<h3 class="details_padding">🎉<%= @user.username %>'s Events </h3>
+<div class="container-fluid">
+  <div class="row">
+
+    <% if @user.show_my_events or @is_viewer_user %>
+      <br>
+      <div class="col-md-6">
+        <h4>Hosted👑</h4>
+    <% if @host_events.empty? %>
+            <em><%= @user.username %></em> hasn't hosted any event
+                <% if @is_viewer_user %>
+                  <%= link_to "HOST NOW🤗", new_event_path() %>
+                <% end %>
+          <% else %>
+        <table class="table table-striped col-md-12" id="events">
+          <thead>
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Details</th>
+            <th>Rate</th>
+          </tr>
+          </thead>
+          <tbody>
+          
+            <% @host_events.each do |event| %>
+              <tr>
+                <td>
+                  <%= event.title %>
+                </td>
+                <td>
+                 <% if event.status == 'open' %>
+          
+                  <span class="badge bg-success"><%= event.status %></span>
+                  <% else  %>
+                  <span class="badge bg-secondary"><%= event.status %></span>
+                  <% end  %>
+                </td>
+                <td>
+                  <%= link_to "Details", event_path(event), :class => 'btn btn-outline-secondary'%>
+                </td>
+                <td>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+          <% end %>
+      </div>
+
+      <div class="col-md-6">
+      <h4>Joined🙌</h4>
+      <% if @join_events.empty? %>
+              <em><%= @user.username %></em> hasn't joined any event.
+                <% if @is_viewer_user %>
+                  <%= link_to "JOIN NOW👋", events_path %>
+                <% end %>
+          <% else %>
+        <table class="table table-striped col-md-12" id="events">
+          <thead>
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Details</th>
+            <th>Rate</th>
+          </tr>
+          </thead>
+          <tbody>
+          
+            <% @join_events.each do |event| %>
+              <tr>
+                <td>
+                  <%= event.title %>
+                </td>
+                <td>
+                  <% if event.status == 'open' %>
+          
+          <span class="badge bg-success"><%= event.status %></span>
+          <% else  %>
+          <span class="badge bg-secondary"><%= event.status %></span>
+          <% end  %>
+                </td>
+                <td>
+                  <%= link_to "Details", event_path(event), :class => 'btn btn-outline-secondary'%>
+                </td>
+                <td>
+                  <!-- <%= link_to "Rate", event_path(event), :class => 'btn btn-primary'%>-->
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <% end %> 
+      </div>
+    <% else %>
+      &nbsp;set private by user 🔒
+    <% end %>
+  </div>
+</div>

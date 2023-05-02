@@ -1,0 +1,201 @@
+<!--  This file is app/views/events/show.html.erb -->
+<h2>Details about <em><%= @event.title %></em></h2>
+<div class='row'>
+<div class='col-6'>
+<ul id="details">
+  <li>
+    🗣&nbsp;<b>Host</b>
+    &nbsp;<%= link_to @event.host, user_path(@host) %>
+  </li>
+  <li>
+    ✏️&nbsp;<b>Host Rating</b>
+    &nbsp;
+    <% (@host.rating.nil? ? 5 : @host.rating).times do %>
+      ⭐️
+    <% end %>
+  </li>
+  <li>
+    📅&nbsp;<b>Event Time</b>
+    &nbsp;<%= @event.event_time.nil? ? "TBD" : @event.event_time.strftime("%m-%d-%Y") %>
+  </li>
+  <li>
+    📍&nbsp;<b>Event Location</b>
+    &nbsp;<%= @event.location.nil? ? "TBD" : @event.location %>
+  </li>
+  <li>
+    ⏳&nbsp;<b>Event Status</b>
+     <% if @event.status == 'open' %>
+          &nbsp;<span class="badge bg-success"><%= @event.status %></span>
+          <% else  %>
+          &nbsp;<span class="badge bg-secondary"><%= @event.status %></span>
+          <% end  %>
+  </li>
+  <li>
+    🏓&nbsp;<b>Event Category</b>
+    &nbsp;<%= @event.category %>
+  </li>
+  <li>
+    🧐&nbsp;<b>Maximum Number of Attendees</b>
+    &nbsp;<%= @event.attendee_limit %>
+  </li>
+  <li>
+    <% if @event.people.length < 6 %>
+      👥&nbsp;<b>Attending People</b>
+      &nbsp;
+      <% @event.people.each do |person| %>
+        <%= link_to person, user_path(@attendees.fetch(person)) %>&nbsp;&nbsp;&nbsp;
+      <% end %>
+    <% else %>
+      👥&nbsp;<b>Attending People</b>
+      <details>
+        <summary>Click to view all attendees</summary>
+        <% @event.people.each do |person| %>
+          <%= link_to person, user_path(@attendees.fetch(person)) %>&nbsp;&nbsp;&nbsp;
+        <% end %>
+      </details>
+    <% end %>
+  </li>
+</ul>
+
+<h3>Description:</h3>
+<p id="description">
+  <div class='card card-body'>
+  <%= @event.description %>
+  </div>
+</p>
+</div>
+<div class='col-6'>
+  <%# <img src="https://picsum.photos/200/300" class="rounded mx-auto d-block"> %>
+</div>
+</div>
+<br>
+
+<div class="row">
+  <% if @is_viewer_host %>
+    <%= link_to 'Edit', edit_event_path(@event), :class => 'btn btn-outline-primary col-2' %>
+    <%= link_to 'Delete', event_path(@event), 'data-method' => 'delete', 'data-confirm' => 'Are you sure?', :class => 'btn btn-outline-danger col-2' %>
+    <%= link_to 'Promote', promote_path(@event), :class => @promote_btn_style %>
+    
+    <% if @event.status == "closed" %>
+      <%= link_to 'Rate your attendees', rate_path(@event, @is_viewer_host), :class => @rate_btn_style %>
+    <% end %>
+
+  <% end %>
+  <%= link_to 'Back to event list', events_path, :class => 'btn btn-outline-primary col-2' %>
+  <%# Join: if user is not host && there's space %>
+  <% if !@is_viewer_host %>
+  <%= link_to @join_text, join_path({:id=>@event.id}), :class => @join_btn_style, :id => 'join_btn'%>
+  
+    <% if @event.status == "closed" && @is_user_joined %>
+        <%= link_to 'Rate your host', rate_path(@event, @is_viewer_host), :class => @rate_btn_style %>
+    <% end %>
+
+  <% end %>
+</div>
+<br>
+
+<br>
+<h3 class="details_padding">📒Comments </h3>
+<%# <p>
+  <a class="btn btn-outline-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Comments
+  </a>
+</p> %>
+<%# <div class="collapse" id="collapseExample">
+  <div class="card card-body"> %>
+
+<table class="table col-md-12 borderless" id="comments">
+  <thead class="bottom">
+    <tr>
+      <th>👤User</th>
+      <th>🖊️Comment</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @event.comments.each do |comment| %>
+      <tr>
+        <td class='col-md-2'>
+          <%= link_to comment.user.username, user_path(comment.user.id) %>&nbsp;&nbsp;&nbsp;
+        </td>
+        <td class='col-md-6'>
+        <div class='lead'>
+          <%= comment.content %>
+          </div>
+        </td>
+        <td class='col-md-2'>
+          <% if comment.user.username == @username %>
+            <%= link_to 'Edit', edit_event_comment_path(@event, comment.id), :class => 'btn btn-outline-secondary col-4' %>
+            <%= link_to 'Delete', event_comment_path(@event, comment.id), 'data-method' => 'delete', 'data-confirm' => 'Are you sure?', :class => 'btn btn-outline-danger col-4' %>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="bottom">
+        <td class='col-md-2'>
+          <div class="row">
+            <% if comment.reactions.is_reacted(comment.id, @user_id) %>
+              <% if comment.reactions.is_thumbuped(comment.id, @user_id) %>
+                <div class="col-md-2">
+                  <%= button_to '', react_path(@event, comment.id, 0), :method => :put, :id => 'thumbup' %>
+                </div>
+              <% end %>
+              <% if comment.reactions.is_liked(comment.id, @user_id) %>
+                <div class="col-md-2">
+                  <%= button_to '', react_path(@event, comment.id, 1), :method => :put, :id => "like" %>
+                </div>
+              <% end %>
+              <% if comment.reactions.is_laughed(comment.id, @user_id) %>
+                <div class="col-md-2">
+                  <%= button_to '', react_path(@event, comment.id, 2), :method => :put, :id => "laugh" %>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="col-md-2">
+                <%= button_to '', react_path(@event, comment.id, 0), :method => :put, :id => 'thumbup' %>
+              </div>
+              <div class="col-md-2">
+                <%= button_to '', react_path(@event, comment.id, 1), :method => :put, :id => "like" %>
+              </div>
+              <div class="col-md-2">
+                <%= button_to '', react_path(@event, comment.id, 2), :method => :put, :id => "laugh" %>
+              </div>
+            <% end %>
+          </div>
+        </td>
+        <% if comment.reactions.count_reacts(comment.id)>0 %>
+          <td class='col-md-6'>
+          <p><small>
+            <% comment.reactions.find_people(comment.id).each do |name| %>
+              <%= name + ", " %>
+            <% end %>
+            <span>and others</span>
+          </small></p>
+          </td>
+          <td class='col-md-2'>
+            <%= comment.reactions.count_reacts(comment.id) %>
+            <span> Reactions</span>
+          </td>
+        <% else %>
+          <td class='col-md-8'>
+            <span>👈 Be the first one to react</span>
+          </td>
+          <td></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= form_tag event_comments_path(@event), :class => 'form' do %>
+  <%= label :comment, '', :class => 'col-form-label' %>
+  <%= text_field :comment, :content, :class => 'form-control', placeholder: 'Leave a quick comment (length limit: 100)', maxlength: 100 %>
+  <br>
+  <%= submit_tag 'Post Comment', :class => 'btn btn-primary' %>
+<% end %>
+  <%# </div>
+</div> %>
+
+<script> 
+  data = <%= raw @usernames.compact.to_json %>;
+  $('#comment_content').atwho({at:"@", 'data':data}); 
+</script>

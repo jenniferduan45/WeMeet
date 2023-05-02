@@ -1,0 +1,105 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ //= require jquery.atwho
+ */
+// @import "bootstrap";
+
+// nav li {  /* active case */
+//     font-weight: bold;
+//     font-size: 30px;
+//     padding: 10px;
+//     text-align: center;
+//     color: white;
+// }
+// nav li a {  /* normal, link case */
+//     font-weight: normal;
+//     font-size: 30px;
+//     padding: 10px;
+//     text-align: center;
+//     color: white;
+// }
+
+#search_btn_nav{
+    color: white;
+    border-color: white;
+}
+
+#search_form_nav{
+    font-size: 20px;
+    padding-top: 5px;
+}
+
+#search_query{
+    color: black;
+}
+
+ul{
+    list-style-type: none;
+    padding-left: 0rem;
+}
+
+ul li {
+    padding: 7px 0px;
+}
+
+details {
+    display: inline;
+    padding: .5em .5em 0;
+}
+
+summary {
+    margin: -.5em -.5em 0;
+    padding: .5em;
+}
+
+details[open] {
+    padding: .5em;
+}
+
+details[open] summary {
+    margin-bottom: .5em;
+}
+
+#thumbup {
+    background: image-url("emoji-thumbup.png") no-repeat center center;
+    background-size: cover;
+    height: 40px;
+    width: 40px;
+    border: white;
+}
+
+#like {
+    background: image-url("emoji-like.png") no-repeat center center;
+    background-size: cover;
+    height: 40px;
+    width: 40px;
+    border: white;
+}
+
+#laugh {
+    background: image-url("emoji-laugh.png") no-repeat center center;
+    background-size: cover;
+    height: 40px;
+    width: 40px;
+    border: white;
+}
+
+.borderless td {
+    border: none;
+}
+ 
+.bottom {
+    border-bottom: 3px solid lightblue;
+}
